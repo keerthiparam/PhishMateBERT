@@ -1,0 +1,3 @@
+Download the phishing detection model files from Google Drive https://drive.google.com/drive/folders/1jpxy4_mu5qb0oNtqljxtt0dzcrmOryQy
+
+After downloading the model from Google Drive, extract the zip folder phishing_bert to PhishMate/model/ directory.
