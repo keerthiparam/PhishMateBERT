@@ -1,43 +1,49 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
-from transformers import BertTokenizer, BertForSequenceClassification
-import re
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 app = Flask(__name__)
 CORS(app)
 
-MODEL_PATH = r"D:\Github\PhishMate\model\phishing_bert"
-tokenizer = BertTokenizer.from_pretrained(MODEL_PATH)
-model = BertForSequenceClassification.from_pretrained(MODEL_PATH)
+MODEL_PATH = r"D:\Github\PhishMateBERT\model\phishing_deberta"
+MAX_LENGTH = 512
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
+model.to(device)
 model.eval()
 
-def clean_text(text):
-    text = text.lower()
-    text = re.sub(r'https?://\S+|www\.\S+', '_url_', text)
-    text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', '_email_', text)
-    text = re.sub(r"[^a-zA-Z0-9\s'\"?!.,]", '', text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
 
-def predict_email(text):
-    cleaned_text = clean_text(text)
-    inputs = tokenizer(cleaned_text, padding="max_length", truncation=True, max_length=256, return_tensors="pt")
-    
+def predict_email(text: str):
+    inputs = tokenizer(
+        text,
+        truncation=True,
+        max_length=MAX_LENGTH,
+        return_tensors="pt",
+    ).to(device)
+
     with torch.no_grad():
-        outputs = model(**inputs)
+        logits = model(**inputs).logits
+        probs = torch.softmax(logits.float(), dim=-1).squeeze()
 
-    logits = outputs.logits
-    prediction = torch.argmax(logits, dim=1).item()
-    
-    return "Phishing Email" if prediction == 1 else "Legitimate Email"
+    pred_id = int(torch.argmax(probs).item())
+    label = model.config.id2label[pred_id]
+    confidence = probs[pred_id].item()
+    return label, confidence
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.json
-    email_text = data.get("text", "")
-    prediction = predict_email(email_text)
-    return jsonify({"prediction": prediction})
+    data = request.get_json(silent=True)
+    if not data or not isinstance(data.get("text"), str) or not data["text"].strip():
+        return jsonify({"error": "Missing or empty 'text' field in JSON body"}), 400
+
+    label, confidence = predict_email(data["text"])
+    return jsonify({"prediction": label, "confidence": round(confidence, 4)})
+
 
 BANNER = r"""
 ░█████████  ░██        ░██           ░██        ░███     ░███               ░██               
@@ -51,4 +57,4 @@ BANNER = r"""
 
 if __name__ == "__main__":
     print(BANNER)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=True)
