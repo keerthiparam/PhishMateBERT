@@ -8,12 +8,12 @@ True Negative:
   "text": "Dear Customer,\n\nThis is a reminder that your scheduled appointment is on Monday, August 10 at 3:30 PM. If you need to reschedule, please contact our office during business hours.\n\nRegards,\nCustomer Support"
 }
 
-False Positive: Non phishing classified as phishing
+False Positive: Non phishing classified as phishing (now it's been fixed)
 {
   "text": "Hi Keerthi K P, Reminder! Your submission is pending for Zonal Round Theme Selection for Women Who Master. Do complete it to be eligible for further rounds."
 }
 
-False Negative: Phishing classified as Non phishing
+False Negative: Phishing classified as Non phishing (now it's been fixed)
 {
   "text": "Your corporate password will expire today.\n\nTo prevent your account from being disabled, please sign in and update your password using the link below:\n\nhttp://office365-password-reset.net/update\n\nIT Support Team"
 }

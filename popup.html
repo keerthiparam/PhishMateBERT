@@ -1,39 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhishMate</title>
-    <link rel="stylesheet" href="popup.css">
-    <script src="popup.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishMate</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="popup.js" defer></script>
 </head>
 <body>
-    <button id="darkModeToggle" class="toggle-btn">
-        <img src="icons/theme.svg" id="modeIcon" alt="Light Mode">
-    </button> 
+  <button id="darkModeToggle" class="toggle-btn" aria-label="Toggle dark mode">
+    <img src="icons/theme.svg" id="modeIcon" alt="">
+  </button>
 
-    <img src="icons/fish48.png" alt="PhishMate Logo" id="phishmateLogo" class="logo">
-    <h1>PhishMate</h1>
+  <img src="icons/fish48.png" alt="PhishMate logo" class="logo">
+  <h1>PhishMate</h1>
 
-    <div class="container">
-        <h2>📧 Emails Tracked</h2>
-        <p id="emailCount">Loading...</p>
+  <div class="container">
+    <h2>Emails Analyzed</h2>
+    <p id="emailCount">Loading...</p>
+    <h2>Phishing Emails Detected</h2>
+    <p id="maliciousCount">Loading...</p>
+  </div>
 
-        <h2>🔗 Links Extracted</h2>
-        <p id="linkCount">Loading...</p>
+  <div class="action-buttons">
+      <button id="refreshBtn" class="action-btn" title="Refresh">
+          <img src="icons/refresh.svg" id="refreshIcon" alt="Refresh">
+      </button>
 
-        <h2>⚠️ Malicious Links</h2>
-        <p id="maliciousCount">Loading...</p>
-    </div>
-    
-    <div class="action-buttons">
-        <button id="refreshBtn" class="action-btn">
-            <img src="icons/refresh.svg" id="refreshIcon" alt="Refresh">
-        </button>
-        <button id="clearBtn" class="action-btn">
-            <img src="icons/bin.svg" id="binIcon" alt="Clear Data">
-        </button>
-    </div>
-    <p id="popupSuccessMessage" class="message success">Data cleared successfully! 🗑️</p>
+      <button id="clearBtn" class="action-btn" title="Clear Data">
+          <img src="icons/bin.svg" id="binIcon" alt="Clear Data">
+      </button>
+  </div>
+  
+  <p id="popupSuccessMessage" class="message success">Statistics cleared.</p>
 </body>
 </html>

@@ -1,74 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const emailCountElem = document.getElementById("emailCount");
-    const linkCountElem = document.getElementById("linkCount");
-    const maliciousCountElem = document.getElementById("maliciousCount");
-    const darkModeToggle = document.getElementById("darkModeToggle");
-    const apiKeyBtn = document.getElementById("apiKeyBtn");
-    const refreshBtn = document.getElementById("refreshBtn");
-    const clearBtn = document.getElementById("clearBtn");
+  const emailCountElem = document.getElementById("emailCount");
+  const maliciousCountElem = document.getElementById("maliciousCount");
+  const darkModeToggle = document.getElementById("darkModeToggle");
+  const clearBtn = document.getElementById("clearBtn");
+  const successMessage = document.getElementById("popupSuccessMessage");
+  const refreshBtn = document.getElementById("refreshBtn");
 
-    // Set consistent window size
-    chrome.windows.getCurrent((win) => {
-        chrome.windows.update(win.id, { width: 380, height: 500 });
+  function updateDarkMode(isDark) {
+    document.body.classList.toggle("dark-mode", isDark);
+  }
+
+  function loadStats() {
+    chrome.storage.local.get(["emailCount", "maliciousCount", "darkMode"], (result) => {
+      emailCountElem.textContent = result.emailCount || 0;
+      maliciousCountElem.textContent = result.maliciousCount || 0;
+      updateDarkMode(result.darkMode === "enabled");
     });
+  }
 
-    // Update dark mode UI
-    function updateDarkModeUI(isDark) {
-        document.body.classList.toggle("dark-mode", isDark);
-    }
-
-    // Load saved stats + dark mode
-    chrome.storage.local.get(["emailCount", "linkCount", "maliciousCount", "darkMode"], (result) => {
-        emailCountElem.textContent = result.emailCount || 0;
-        linkCountElem.textContent = result.linkCount || 0;
-        maliciousCountElem.textContent = result.maliciousCount || 0;
-        updateDarkModeUI(result.darkMode === "enabled");
+  darkModeToggle.addEventListener("click", () => {
+    chrome.storage.local.get("darkMode", (result) => {
+      const darkMode = result.darkMode !== "enabled" ? "enabled" : "disabled";
+      chrome.storage.local.set({ darkMode });
+      updateDarkMode(darkMode === "enabled");
     });
+  });
 
-    // Toggle dark mode
-    darkModeToggle.addEventListener("click", () => {
-        chrome.storage.local.get("darkMode", (result) => {
-            const newMode = result.darkMode === "enabled" ? "disabled" : "enabled";
-            chrome.storage.local.set({ darkMode: newMode });
-            updateDarkModeUI(newMode === "enabled");
-        });
+  clearBtn.addEventListener("click", () => {
+    chrome.storage.local.set({ emailCount: 0, maliciousCount: 0 }, () => {
+      emailCountElem.textContent = "0";
+      maliciousCountElem.textContent = "0";
+      successMessage.style.display = "block";
+      setTimeout(() => (successMessage.style.display = "none"), 2000);
     });
+  });
 
-    // Navigate to API settings
-    if (apiKeyBtn) {
-        apiKeyBtn.addEventListener("click", () => {
-            window.location.href = "api.html";
-        });
-    }
+  refreshBtn.addEventListener("click", () => {
+    refreshBtn.disabled = true;
 
-    // Refresh data
-    if (refreshBtn) {
-        refreshBtn.addEventListener("click", () => {
-            chrome.runtime.sendMessage({ action: "refreshData" });
-            emailCountElem.textContent = "Loading...";
-            linkCountElem.textContent = "Loading...";
-            maliciousCountElem.textContent = "Loading...";
-        });
-    }
+    const refreshIcon = document.getElementById("refreshIcon");
 
-    // Clear data
-    if (clearBtn) {
-        clearBtn.addEventListener("click", () => {
-            chrome.storage.local.set({
-                emailCount: 0,
-                linkCount: 0,
-                maliciousCount: 0
-            }, () => {
-                emailCountElem.textContent = "0";
-                linkCountElem.textContent = "0";
-                maliciousCountElem.textContent = "0";
+    chrome.storage.local.get(
+        ["emailCount", "maliciousCount"],
+        (result) => {
+            emailCountElem.textContent = result.emailCount || 0;
+            maliciousCountElem.textContent = result.maliciousCount || 0;
 
-                const popupSuccessMessage = document.getElementById("popupSuccessMessage");
-                popupSuccessMessage.style.display = "block";
-                setTimeout(() => {
-                    popupSuccessMessage.style.display = "none";
-                }, 2000);
-            });
-        });
-    }
+            // Visual feedback
+            refreshIcon.style.transform = "rotate(360deg)";
+            refreshIcon.style.transition = "transform 0.4s ease";
+
+            setTimeout(() => {
+                refreshIcon.style.transform = "rotate(0deg)";
+                refreshBtn.disabled = false;
+            }, 400);
+          }
+      );
+  });
+
+  loadStats();
 });
