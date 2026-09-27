@@ -1,4 +1,4 @@
-// Background service worker for PhishMate.
+// Background service worker for PhishMateBERT.
 // The extension stores only local usage statistics.
 
 chrome.runtime.onInstalled.addListener(() => {

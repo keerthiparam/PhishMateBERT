@@ -38,7 +38,7 @@ async function checkEmailPhishing(emailText) {
     return data.prediction === "Phishing Email";
 
   } catch (error) {
-    console.error("PhishMate prediction error:", error);
+    console.error("PhishMateBERT prediction error:", error);
     return false;
   }
 }

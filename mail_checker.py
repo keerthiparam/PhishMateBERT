@@ -7,7 +7,7 @@ import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = Path(os.getenv("PHISHMATE_MODEL_PATH", BASE_DIR / "model" / "phishing_deberta"))
+MODEL_PATH = Path(os.getenv("PhishMateBERT_MODEL_PATH", BASE_DIR / "model" / "phishing_deberta"))
 MAX_LENGTH = 512
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -17,7 +17,7 @@ CORS(app)
 if not MODEL_PATH.exists():
     raise FileNotFoundError(
         f"Model not found at: {MODEL_PATH}\n"
-        "Place the model in model/phishing_deberta or set PHISHMATE_MODEL_PATH."
+        "Place the model in model/phishing_deberta or set PhishMateBERT_MODEL_PATH."
     )
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
@@ -72,5 +72,5 @@ BANNER = r"""
 
 if __name__ == "__main__":
     print(BANNER)
-    print(f"PhishMate API running on {DEVICE}")
+    print(f"PhishMateBERT API running on {DEVICE}")
     app.run(host="127.0.0.1", port=5000, debug=False)

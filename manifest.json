@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "PhishMate",
+  "name": "PhishMateBERT",
   "version": "1.2.0",
   "description": "On-device phishing email detection using a local AI model.",
   "permissions": ["storage"],

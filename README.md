@@ -1,6 +1,6 @@
-# PhishMate
+# PhishMateBERT
 
-PhishMate is a Chromium browser extension that detects potentially phishing emails using a locally running AI model. Email text is sent only to the local API at `127.0.0.1` for inference.
+PhishMateBERT is a Chromium browser extension that detects potentially phishing emails using a locally running AI model. Email text is sent only to the local API at `127.0.0.1` for inference.
 
 ## Features
 
@@ -14,7 +14,7 @@ PhishMate is a Chromium browser extension that detects potentially phishing emai
 ## Project Structure
 
 ```text
-PhishMate/
+PhishMateBERT/
 ├── background.js
 ├── content.js
 ├── mail_checker.py
@@ -50,7 +50,7 @@ model/phishing_deberta/
 
 The model directory is intentionally ignored by Git because model weights are large.
 
-Alternatively, set `PHISHMATE_MODEL_PATH` to the full path of the model directory.
+Alternatively, set `PhishMateBERT_MODEL_PATH` to the full path of the model directory.
 
 ## Run the Local API
 
@@ -82,13 +82,13 @@ Content-Type: application/json
 1. Open `chrome://extensions/`.
 2. Enable **Developer mode**.
 3. Click **Load unpacked**.
-4. Select the PhishMate project folder.
+4. Select the PhishMateBERT project folder.
 5. Start the local API with `python mail_checker.py`.
 6. Open a supported webmail provider and view an email.
 
 ## Privacy
 
-PhishMate is designed for local inference. The extension sends extracted email text to the Flask server running on `127.0.0.1`. No external threat-intelligence API, API key, or cloud inference endpoint is required by the cleaned project.
+PhishMateBERT is designed for local inference. The extension sends extracted email text to the Flask server running on `127.0.0.1`. No external threat-intelligence API, API key, or cloud inference endpoint is required by the cleaned project.
 
 ## Supported Webmail Providers
 
